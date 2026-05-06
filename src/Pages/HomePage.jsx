@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+
 import { Link } from 'react-router-dom'
 
 
@@ -8,10 +9,17 @@ import Feature from '../Components/Feature'
 import CustomerSupport from '../Components/CustomerSupport'
 import Products from '../Components/Products'
 import Testimonial from '../Components/Testimonial'
+import ProductSlider from '../Components/ProductSlider'
+
 
 import { getSetting } from "../Redux/ActionCreators/SettingActionCreators"
+import { getMaincategory } from "../Redux/ActionCreators/MaincategoryActionCreators"
+import { getProduct } from "../Redux/ActionCreators/ProductActionCreators"
 export default function HomePage() {
   let SettingStateData = useSelector(state => state.SettingStateData)
+  let MaincategoryStateData = useSelector(state => state.MaincategoryStateData)
+  let ProductStateData = useSelector(state => state.ProductStateData)
+
   let dispatch = useDispatch()
 
   let [settingData, setSettingData] = useState({
@@ -26,6 +34,14 @@ export default function HomePage() {
       }
     })()
   }, [SettingStateData.length])
+
+  useEffect(() => {
+    (() => dispatch(getProduct()))()
+  }, [ProductStateData.length])
+
+  useEffect(() => {
+    (() => dispatch(getMaincategory()))()
+  }, [MaincategoryStateData.length])
   return (
     <>
       <section id="hero" className="hero section">
@@ -112,10 +128,18 @@ export default function HomePage() {
         </div>
 
       </section>
+      <Products />
       <About />
       <Feature />
       <CustomerSupport />
-      <Products />
+      {
+        MaincategoryStateData.filter(x => x.status).map((item, index) => {
+          let data = ProductStateData.filter(x => x.status && x.maincategory === item.name)
+          if (data.length) {
+            return <ProductSlider key={index} maincategory={item.name} data={data} />
+          }
+        })
+      }
       <Testimonial />
     </>
   )
