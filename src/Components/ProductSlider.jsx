@@ -33,7 +33,8 @@ export default function ProductSlider({ maincategory, data }) {
     return (
         <section id="services" className="services section">
             <div className="container">
-                <h4 className='text-center'>Checkout Out Latest Products of <span className='text-primary'>{maincategory}</span></h4>
+                {maincategory === "Related Products" ?
+                    <h4>Other Related Products</h4> : <h4 className='text-center'>Checkout Out Latest Products of <span className='text-primary'>{maincategory}</span></h4>}
                 <Swiper {...options}>
                     {
                         data.map((item, index) => {

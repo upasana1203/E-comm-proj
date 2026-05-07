@@ -20,6 +20,10 @@ export default function ShopPage() {
         size: []
     })
     let [sortFilter, setSortFilter] = useState("1")
+    let [search, setSearch] = useState("")
+    let [min, setMin] = useState(-1)
+    let [max, setMax] = useState(-1)
+
 
     let MaincategoryStateData = useSelector((state) => state.MaincategoryStateData)
     let SubcategoryStateData = useSelector((state) => state.SubcategoryStateData)
@@ -37,6 +41,7 @@ export default function ShopPage() {
 
         setSelected({ ...selected, [key]: arr })
 
+        setSearch("")
         filterData({ ...selected, [key]: arr })
     }
 
@@ -48,11 +53,41 @@ export default function ShopPage() {
             (selected.color.length === 0 || (new Set(selected.color)).intersection(new Set(x.color)).size) &&
             (selected.size.length === 0 || (new Set(selected.size)).intersection(new Set(x.size)).size)
         ))
-        applySortFilter(sortFilter,data)
+        applySortFilter(sortFilter, data)
+    }
+
+    function postSearch() {
+        setSelected({
+            maincategory: [],
+            subcategory: [],
+            brand: [],
+            color: [],
+            size: []
+        })
+        let ch = search.toLocaleLowerCase()
+        let data = ProductStateData.filter(x => x.status && (
+            x.name?.toLocaleLowerCase().includes(ch) ||
+            x.maincategory?.toLocaleLowerCase() === ch ||
+            x.subcategory?.toLocaleLowerCase() === ch ||
+            x.brand?.toLocaleLowerCase() === ch ||
+            x.description?.toLocaleLowerCase().includes(ch)
+        ))
+        applySortFilter(sortFilter, data)
+    }
+
+    function postPriceFilter(e) {
+        e.preventDefault()
+        if (search !== "")
+            postSearch()
+        else
+            filterData(selected)
     }
 
     function applySortFilter(sortFilter, data) {
         setSortFilter(sortFilter)
+        if (min !== -1) {
+            data = data.filter(x => x.finalPrice >= min && x.finalPrice <= max)
+        }
         if (sortFilter === "1")
             setData(data.sort((x, y) => y.id.localeCompare(x.id)))
         else if (sortFilter === "2")
@@ -117,10 +152,39 @@ export default function ShopPage() {
                                 return <li key={item.id} onClick={() => getSelection('size', item)} className="list-group-item">{item} {selected.size.includes(item) ? <span><i className='bi bi-check float-end'></i></span> : null}</li>
                             })}
                         </ul>
+                        <ul className="list-group mb-3">
+                            <li className="list-group-item active" aria-current="true">Price Range</li>
+                            <form onSubmit={postPriceFilter}>
+                                <div className="row">
+                                    <div className="col-6 my-3">
+                                        <label>Min. Amount</label>
+                                        <input type="text" name="min" value={min === -1 ? null : min} onChange={(e) => setMin(e.target.value)} className='form-control border-primary' placeholder='Minimum' />
+                                    </div>
+                                    <div className="col-6 my-3">
+                                        <label>Max. Amount</label>
+                                        <input type="text" name="max" value={max === -1 ? null : max} onChange={(e) => setMax(e.target.value)} className='form-control border-primary' placeholder='Maximum' />
+                                    </div>
+
+                                    <div className="col-12 ">
+                                        <button type="submit" className='btn btn-primary w-100'>Apply</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </ul>
                     </div>
                     <div className="col-lg-9">
                         <div className="row">
-                            <div className="col-lg-8"></div>
+                            <div className="col-lg-8">
+                                <form onSubmit={(e) => {
+                                    e.preventDefault()
+                                    postSearch()
+                                }}>
+                                    <div className="btn-group w-100">
+                                        <input type="search" name="search" onChange={(e) => setSearch(e.target.value)} value={search} placeholder='Search Product By Name, Category , Color Etc' className='form-control border-primary rounded-0 rounded-start' />
+                                        <button type="submit" className='btn btn-primary'>Search</button>
+                                    </div>
+                                </form>
+                            </div>
                             <div className="col-lg-4">
                                 <select name="sortFilter" onChange={(e) => applySortFilter(e.target.value, data)} className='form-select border-primary'>
                                     <option value="1">Latest</option>
