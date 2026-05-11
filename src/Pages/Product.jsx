@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react'
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, EffectCube, Pagination } from 'swiper/modules';
+
 import Breadcrum from '../Components/Breadcrum'
 
 import { getProduct } from "../Redux/ActionCreators/ProductActionCreators"
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import ProductSlider from '../Components/ProductSlider'
+
 export default function Product() {
     let { id } = useParams()
     let [data, setData] = useState({})
@@ -18,6 +22,24 @@ export default function Product() {
 
     let ProductStateData = useSelector(state => state.ProductStateData)
     let dispatch = useDispatch()
+
+    let options = {
+        effect: 'cube',
+        grabCursor: true,
+        cubeEffect: {
+            shadow: true,
+            slideShadows: true,
+            shadowOffset: 20,
+            shadowScale: 0.94,
+        },
+        autoplay: {
+            delay: 2000,
+            disableOnInteraction: false,
+        },
+        loop: true,
+        pagination: true,
+        modules: [EffectCube, Pagination,Autoplay]
+    }
 
     useEffect(() => {
         (() => {
@@ -39,8 +61,16 @@ export default function Product() {
             <Breadcrum title={data.name} description={`${data.maincategory} -> ${data.subcategory} -> ${data.brand}`} />
             <div className="container">
                 <div className="row">
-                    <div className="col-sm-6"></div>
-                    <div className="col-sm-6">
+                    <div className="col-lg-6">
+                        <Swiper {...options}>
+                            {data.pic?.map((item, index) => {
+                                return <SwiperSlide key={index}>
+                                    <img style={{ width: "100%", height: 400 }} src={`${import.meta.env.VITE_APP_IMAGE_SERVER}${item}`} />
+                                </SwiperSlide>
+                            })}
+                        </Swiper>
+                    </div>
+                    <div className="col-lg-6">
                         <table className='table table-bordered'>
                             <tbody>
                                 <tr>
@@ -84,9 +114,9 @@ export default function Product() {
                                         <div className="row">
                                             <div className="col-4">
                                                 <div className="btn-group w-100">
-                                                    <button className='btn btn-primary' onClick={()=>setSelected({...selected,qty:selected.qty>1?selected.qty-1:selected.qty})}><i className='bi bi-dash'></i></button>
+                                                    <button className='btn btn-primary' onClick={() => setSelected({ ...selected, qty: selected.qty > 1 ? selected.qty - 1 : selected.qty })}><i className='bi bi-dash'></i></button>
                                                     <h4 className='w-50 text-center'>{selected.qty}</h4>
-                                                    <button className='btn btn-primary' onClick={()=>setSelected({...selected,qty:selected.qty<data.stockQuantity?selected.qty+1:selected.qty})}><i className='bi bi-plus'></i></button>
+                                                    <button className='btn btn-primary' onClick={() => setSelected({ ...selected, qty: selected.qty < data.stockQuantity ? selected.qty + 1 : selected.qty })}><i className='bi bi-plus'></i></button>
                                                 </div>
                                             </div>
                                             <div className="col-8">

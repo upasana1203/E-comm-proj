@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 
 import { getSetting } from "../Redux/ActionCreators/SettingActionCreators"
 export default function Navbar() {
@@ -8,6 +8,7 @@ export default function Navbar() {
   let dispatch = useDispatch()
 
   let [showMenu, setShowMenu] = useState(false)
+  let navigate = useNavigate()
 
   let [settingData, setSettingData] = useState({
     siteName: import.meta.env.VITE_APP_SITE_NAME,
@@ -22,6 +23,11 @@ export default function Navbar() {
     instagram: import.meta.env.VITE_APP_INSTAGRAM,
     youtube: import.meta.env.VITE_APP_YOUTUBE
   })
+
+  function logout() {
+    localStorage.clear()
+    navigate("/login")
+  }
 
   useEffect(() => {
     (() => {
@@ -86,17 +92,21 @@ export default function Navbar() {
               <li><NavLink to="/testimonial">Testimonials</NavLink></li>
               <li><NavLink to="/contactus">Contact Us</NavLink></li>
               <li><NavLink to="/admin">Admin</NavLink></li>
-              <li className="dropdown"><a href="#"><span>Nitin Chauhan</span> <i className="bi bi-chevron-down toggle-dropdown"></i></a>
-                <ul>
-                  <li><Link to="/profile?option=Profile">Profile</Link></li>
-                  <li><Link to="/profile?option=Wishlist">Wishlist</Link></li>
-                  <li><Link to="/profile?option=Orders">Orders</Link></li>
-                  <li><Link to="/profile?option=Address">Address</Link></li>
-                  <li><Link to="/cart">Cart</Link></li>
-                  <li><Link to="/checkout">Checkout</Link></li>
-                  <li><button className='btn ms-2'>Logout</button></li>
-                </ul>
-              </li>
+              {
+                localStorage.getItem("login") ?
+                  <li className="dropdown"><a href="#"><span>{localStorage.getItem("name")}</span> <i className="bi bi-chevron-down toggle-dropdown"></i></a>
+                    <ul>
+                      <li><Link to="/profile?option=Profile">Profile</Link></li>
+                      <li><Link to="/profile?option=Wishlist">Wishlist</Link></li>
+                      <li><Link to="/profile?option=Orders">Orders</Link></li>
+                      <li><Link to="/profile?option=Address">Address</Link></li>
+                      <li><Link to="/cart">Cart</Link></li>
+                      <li><Link to="/checkout">Checkout</Link></li>
+                      <li><button className='btn ms-2' onClick={logout}>Logout</button></li>
+                    </ul>
+                  </li> :
+                  <li><NavLink to="/login">login</NavLink></li>
+              }
             </ul>
             <i className={`mobile-nav-toggle d-xl-none bi ${showMenu ? 'bi-x' : 'bi-list'}`} onClick={() => setShowMenu(!showMenu)}></i>
           </nav>

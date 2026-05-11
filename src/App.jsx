@@ -43,6 +43,8 @@ import AdminProductPage from './Pages/Admin/Product/AdminProductPage'
 import AdminCreateProductPage from './Pages/Admin/Product/AdminCreateProductPage'
 import AdminUpdateProductPage from './Pages/Admin/Product/AdminUpdateProductPage'
 import Product from './Pages/Product'
+import LoginPage from './Pages/User/LoginPage'
+import SignupPage from './Pages/User/SignupPage'
 
 export default function App() {
   return (
@@ -60,6 +62,11 @@ export default function App() {
           <Route path='/contactus' element={<ContactUsPage />} />
           <Route path='/privacy-policy' element={<PrivacyPolicy />} />
           <Route path='/tc' element={<TermsAndConditionPolicy />} />
+
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/signup' element={<SignupPage />} />
+
+          {/* User Routes */}
 
 
           {/* Admin Routes */}
