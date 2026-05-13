@@ -45,6 +45,10 @@ import AdminUpdateProductPage from './Pages/Admin/Product/AdminUpdateProductPage
 import Product from './Pages/Product'
 import LoginPage from './Pages/User/LoginPage'
 import SignupPage from './Pages/User/SignupPage'
+import ProfilePage from './Pages/User/ProfilePage'
+import CartPage from './Pages/User/CartPage'
+import CheckoutPage from './Pages/User/CheckoutPage'
+import OrderConfirmation from './Pages/User/OrderConfirmation'
 
 export default function App() {
   return (
@@ -67,6 +71,10 @@ export default function App() {
           <Route path='/signup' element={<SignupPage />} />
 
           {/* User Routes */}
+          <Route path='/profile' element={<ProfilePage />} />
+          <Route path='/cart' element={<CartPage />} />
+          <Route path='/checkout' element={<CheckoutPage />} />
+          <Route path='/order-confirmation' element={<OrderConfirmation />} />
 
 
           {/* Admin Routes */}

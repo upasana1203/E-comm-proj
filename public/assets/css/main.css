@@ -898,11 +898,12 @@ h6 {
   color: var(--default-color);
   background-color: var(--background-color);
   position: relative;
-  padding-top: 100px;
+  padding-top: 40px;
 }
 
 .page-title .heading {
-  padding: 80px 0;
+  padding-top :80px;
+  padding-bottom: 20px;
 }
 
 .page-title .heading h1 {
