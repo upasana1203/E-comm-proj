@@ -105,7 +105,7 @@ export default function Product() {
                     window.history.back()
             }
         })()
-    }, [ProductStateData.length])
+    }, [ProductStateData.length,id])
 
     useEffect(() => {
         (() => dispatch(getCart()))()

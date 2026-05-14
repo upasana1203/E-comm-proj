@@ -83,6 +83,7 @@ export default function CartPage() {
                                             <th>Stock</th>
                                             <th>Price</th>
                                             <th>Quantity</th>
+                                            <th>Total</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -107,6 +108,7 @@ export default function CartPage() {
                                                         <button className='btn btn-primary' onClick={()=>updateRecord('Inc',item.id)}><i className='bi bi-plus'></i></button>
                                                     </div>
                                                 </td>
+                                                <td>&#8377;{item.total}</td>
                                                 <td><button className='btn btn-danger' onClick={() => deleteRecord(item.id)}><i className='bi bi-trash'></i></button></td>
                                             </tr>
                                         })}

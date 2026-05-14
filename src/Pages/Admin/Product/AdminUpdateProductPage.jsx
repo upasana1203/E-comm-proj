@@ -198,7 +198,7 @@ export default function AdminUpdateProductPage() {
                                 </div>
                                 <div className="col-lg-3 mb-3">
                                     <label>Stock <span className='text-danger'>*</span></label>
-                                    <select name="stock" value={data.stock} className='form-select border-primary'>
+                                    <select name="stock" value={data.stock?"1":"0"} onChange={getInputData} className='form-select border-primary'>
                                         <option value="1">In Stock</option>
                                         <option value="0">Out Of Stock</option>
                                     </select>
@@ -264,7 +264,7 @@ export default function AdminUpdateProductPage() {
                                     <label>Old Pic (Click on Pic to Remove)</label>
                                     <div>
                                         {data.pic.map((item, index) => {
-                                            return <img onClick={() => {
+                                            return <img key={index} onClick={() => {
                                                 data.pic.splice(index, 1)
                                                 setFlag(!flag)
                                             }} src={`${import.meta.env.VITE_APP_IMAGE_SERVER}${item}`} className='m-1' height={80} width={80} />
