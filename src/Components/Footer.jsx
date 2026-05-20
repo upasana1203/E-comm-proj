@@ -3,8 +3,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { getSetting } from "../Redux/ActionCreators/SettingActionCreators"
+import { getNewsletter, createNewsletter } from "../Redux/ActionCreators/NewsletterActionCreators"
 export default function Footer() {
+  let [email, setEmail] = useState("")
+  let [message, setMessage] = useState("")
+
   let SettingStateData = useSelector(state => state.SettingStateData)
+  let NewsletterStateData = useSelector(state => state.NewsletterStateData)
+
   let dispatch = useDispatch()
 
   let [settingData, setSettingData] = useState({
@@ -21,6 +27,21 @@ export default function Footer() {
     youtube: import.meta.env.VITE_APP_YOUTUBE
   })
 
+  function postData(e) {
+    e.preventDefault()
+    if (email === "")
+      setMessage("Please Enter a Valid Email Address")
+    else {
+      if (NewsletterStateData.find(x => x.email?.toLowerCase() === email.toLocaleLowerCase()))
+        setMessage("This Email Address is Already Registered With US")
+      else {
+        dispatch(createNewsletter({ email: email, status: true }))
+        setMessage("Thank to Subscribe Our Newsletter Service")
+        setEmail("")
+      }
+    }
+  }
+
   useEffect(() => {
     (() => {
       dispatch(getSetting())
@@ -33,6 +54,12 @@ export default function Footer() {
       }
     })()
   }, [SettingStateData.length])
+
+  useEffect(() => {
+    (() => {
+      dispatch(getNewsletter())
+    })()
+  }, [NewsletterStateData.length])
   return (
     <footer id="footer" className="footer-16 footer position-relative bg-dark">
 
@@ -110,12 +137,13 @@ export default function Footer() {
                       <h6 className='text-light'>Subscribe Our Newsletter Service</h6>
                       <p className='text-light my-3'>Subscribe to the Heritage Ally newsletter to stay updated with the latest arrivals, exclusive offers, and special discounts. Get style inspiration and never miss out on exciting deals delivered straight to your inbox.</p>
                       <div>
-                        <form>
+                        <form onSubmit={postData}>
                           <div className="btn-group w-100">
-                            <input type="email" name="email" placeholder='Enter Your Email Address' className='form-control rounded-0 rounded-start' />
-                            <button className='btn btn-dark border '>Subscribe</button>
+                            <input type="email" name="email" onChange={(e) => setEmail(e.target.value)} value={email} placeholder='Enter Your Email Address' className='form-control rounded-0 rounded-start' />
+                            <button type='submit' className='btn btn-dark border '>Subscribe</button>
                           </div>
                         </form>
+                        {message ? <p className='text-light' style={{fontSize:14}}>{message}</p> : null}
                       </div>
                       <div className='mt-3'>
                         <div className="social-links d-flex align-items-center">

@@ -86,6 +86,8 @@ export default function TextValidators(e) {
         return ""
 
     case "question":
+    case "subject":
+    case "message":
       if (!value || value.length === 0)
         return name + " Field is Mendatory"
       else if (value.length < 20)

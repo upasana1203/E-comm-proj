@@ -49,6 +49,14 @@ import ProfilePage from './Pages/User/ProfilePage'
 import CartPage from './Pages/User/CartPage'
 import CheckoutPage from './Pages/User/CheckoutPage'
 import OrderConfirmation from './Pages/User/OrderConfirmation'
+import AdminNewsletterPage from './Pages/Admin/Newsletter/AdminNewsletterPage'
+import AdminContactUsPage from './Pages/Admin/ContactUs/AdminContactUsPage'
+import AdminContactUsShowPage from './Pages/Admin/ContactUs/AdminContactUsShowPage'
+import AdminCheckoutPage from './Pages/Admin/Checkout/AdminCheckoutPage'
+import AdminCheckoutShowPage from './Pages/Admin/Checkout/AdminCheckoutShowPage'
+import AdminUserPage from './Pages/Admin/User/AdminUserPage'
+import AdminCreateUserPage from './Pages/Admin/User/AdminCreateUserPage'
+import AdminUpdateUserPage from './Pages/Admin/User/AdminUpdateUserPage'
 
 export default function App() {
   return (
@@ -106,6 +114,18 @@ export default function App() {
 
           <Route path='/admin/setting' element={<AdminSettingPage />} />
 
+          <Route path='/admin/newsletter' element={<AdminNewsletterPage />} />
+
+          <Route path='/admin/contactus' element={<AdminContactUsPage />} />
+          <Route path='/admin/contactus/show/:id' element={<AdminContactUsShowPage />} />
+
+
+          <Route path='/admin/checkout' element={<AdminCheckoutPage />} />
+          <Route path='/admin/checkout/show/:id' element={<AdminCheckoutShowPage />} />
+
+          <Route path='/admin/user' element={<AdminUserPage />} />
+          <Route path='/admin/user/create' element={<AdminCreateUserPage />} />
+          <Route path='/admin/user/update/:id' element={<AdminUpdateUserPage />} />
 
           <Route path='/*' element={<ErrorPage />} />
         </Routes>
