@@ -15,7 +15,7 @@ export default function AdminSidebar() {
             <Link to="/admin/newsletter" className="list-group-item list-group-item-action active mb-1" aria-current="true"><i className='fs-5 bi bi-envelope'></i><span className='float-end'>Newsletter</span></Link>
             <Link to="/admin/checkout" className="list-group-item list-group-item-action active mb-1" aria-current="true"><i className='fs-5 bi bi-bag-check'></i><span className='float-end'>Checkout</span></Link>
             <Link to="/admin/contactus" className="list-group-item list-group-item-action active mb-1" aria-current="true"><i className='fs-5 bi bi-telephone'></i><span className='float-end'>Contact Us</span></Link>
-            <Link to="/admin/user" className="list-group-item list-group-item-action active mb-1" aria-current="true"><i className='fs-5 bi bi-people'></i><span className='float-end'>User</span></Link>
+            {localStorage.getItem("role") === "Admin" ? null : <Link to="/admin/user" className="list-group-item list-group-item-action active mb-1" aria-current="true"><i className='fs-5 bi bi-people'></i><span className='float-end'>User</span></Link>}
         </div>
     )
 }

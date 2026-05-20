@@ -7,11 +7,14 @@ import 'datatables.net-dt/css/dataTables.dataTables.min.css';
 
 import AdminSidebar from '../../../Components/Admin/AdminSidebar'
 
-import { getUser, deleteUser } from "../../../Redux/ActionCreators/UserActionCreators"
+import { getUser, deleteUser, updateUser } from "../../../Redux/ActionCreators/UserActionCreators"
 export default function AdminUserPage() {
     let [data, setData] = useState([])
     let UserStateData = useSelector(state => state.UserStateData)
     let dispatch = useDispatch()
+
+
+    let [flag, setFlag] = useState(false)
 
     function deleteRecord(id) {
         if (window.confirm("Are You Sure to Delete That Record : ")) {
@@ -19,6 +22,19 @@ export default function AdminUserPage() {
             setData(data.filter(x => x.id !== id))
         }
     }
+
+    function updateStatus(id) {
+        if (window.confirm("Are Your Sure to Change Status : ")) {
+            let item = data.find(x => x.id === id)
+            let index = data.findIndex(x => x.id === id)
+            item.status = !item.status
+            dispatch(updateUser({ ...item }))
+            data[index].status = item.status
+            setData(data)
+            setFlag(!flag)
+        }
+    }
+
     useEffect(() => {
         let time = (() => {
             dispatch(getUser())
@@ -65,9 +81,9 @@ export default function AdminUserPage() {
                                             <td>{item.email}</td>
                                             <td>{item.phone}</td>
                                             <td>{item.role}</td>
-                                            <td>{item.status ? "Active" : "Inactive"}</td>
+                                            <td style={{ cursor: "pointer" }} onClick={() => updateStatus(item.id)}>{item.status ? "Active" : "Inactive"}</td>
                                             <td>{item.role === "Buyer" ? null : <Link to={`/admin/user/update/${item.id}`} className='btn btn-primary'><i className='bi bi-pencil'></i></Link>}</td>
-                                            <td><button className='btn btn-danger' onClick={() => deleteRecord(item.id)}><i className='bi bi-trash'></i></button></td>
+                                            <td>{localStorage.getItem("role") === "Super Admin" ? <button className='btn btn-danger' onClick={() => deleteRecord(item.id)}><i className='bi bi-trash'></i></button> : null}</td>
                                         </tr>
                                     })}
                                 </tbody>

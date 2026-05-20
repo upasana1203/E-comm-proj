@@ -91,12 +91,12 @@ export default function Navbar() {
               <li><NavLink to="/faq">Faq</NavLink></li>
               <li><NavLink to="/testimonial">Testimonials</NavLink></li>
               <li><NavLink to="/contactus">Contact Us</NavLink></li>
-              <li><NavLink to="/admin">Admin</NavLink></li>
               {
                 localStorage.getItem("login") ?
                   <li className="dropdown"><a href="#"><span>{localStorage.getItem("name")}</span> <i className="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul>
                       <li><Link to="/profile?option=Profile">Profile</Link></li>
+                      {localStorage.getItem("role")!=="Buyer"?<li><Link to="/admin">Admin Dashboard</Link></li>:null}
                       <li><Link to="/profile?option=Wishlist">Wishlist</Link></li>
                       <li><Link to="/profile?option=Orders">Orders</Link></li>
                       <li><Link to="/profile?option=Address">Address</Link></li>

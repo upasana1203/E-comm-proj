@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Breadcrum from '../../Components/Breadcrum'
 
 import { getCart, deleteCart, updateCart } from "../../Redux/ActionCreators/CartActionCreators"
+import { getProduct } from "../../Redux/ActionCreators/ProductActionCreators"
 export default function CartPage() {
     let [data, setData] = useState([])
     let [subtotal, setSubtotal] = useState(0)
@@ -12,6 +13,7 @@ export default function CartPage() {
     let [total, setTotal] = useState(0)
 
     let CartStateData = useSelector(state => state.CartStateData)
+    let ProductStateData = useSelector(state => state.ProductStateData)
     let dispatch = useDispatch()
 
     function deleteRecord(id) {
@@ -38,7 +40,8 @@ export default function CartPage() {
     function updateRecord(option, id) {
         let item = data.find(x => x.id === id)
         let index = data.findIndex(x => x.id === id)
-        if ((option === "Dec" && item.qty === 1) || (option === "Inc" && item.qty === item.stockQuantity))
+        console.log(item)
+        if ((item.stockQuantity === 0) || (option === "Dec" && item.qty === 1) || (option === "Inc" && item.qty === item.stockQuantity))
             return
         else if (option === "Dec") {
             item['qty'] = item['qty'] - 1
@@ -57,13 +60,24 @@ export default function CartPage() {
     useEffect(() => {
         (() => {
             dispatch(getCart())
-            if (CartStateData.length) {
+            if (CartStateData.length && ProductStateData.length) {
                 let cart = CartStateData.filter(x => x.user === localStorage.getItem("userid"))
+                cart = cart.map(x => {
+                    let product = ProductStateData.find(p => p.id === x.product)
+                    x.stockQuantity = product.stockQuantity
+                    return x
+                })
                 setData(cart)
                 calculate(cart)
             }
         })()
-    }, [CartStateData.length])
+    }, [CartStateData.length, ProductStateData.length])
+
+    useEffect(() => {
+        (() => {
+            dispatch(getProduct())
+        })()
+    }, [ProductStateData.length])
     return (
         <>
             <Breadcrum title="Cart" description="Review your selected items, update quantities, and proceed to secure checkout easily from your Heritage Ally cart. Enjoy a smooth shopping experience with complete order transparency and convenience." />
@@ -103,13 +117,13 @@ export default function CartPage() {
                                                 <td>&#8377;{item.finalPrice}</td>
                                                 <td>
                                                     <div className="btn-group" style={{ width: 130 }}>
-                                                        <button className='btn btn-primary' onClick={()=>updateRecord('Dec',item.id)}><i className='bi bi-dash'></i></button>
+                                                        <button className='btn btn-primary' onClick={() => updateRecord('Dec', item.id)}><i className='bi bi-dash'></i></button>
                                                         <h4 className='w-50 text-center'>{item.qty}</h4>
-                                                        <button className='btn btn-primary' onClick={()=>updateRecord('Inc',item.id)}><i className='bi bi-plus'></i></button>
+                                                        <button className='btn btn-primary' onClick={() => updateRecord('Inc', item.id)}><i className='bi bi-plus'></i></button>
                                                     </div>
                                                 </td>
                                                 <td>&#8377;{item.total}</td>
-                                                <td><button className='btn btn-danger' onClick={() => deleteRecord(item.id)}><i className='bi bi-trash'></i></button></td>
+                                                <td>{localStorage.getItem("role") === "Super Admin" ? <button className='btn btn-danger' onClick={() => deleteRecord(item.id)}><i className='bi bi-trash'></i></button> : null}</td>
                                             </tr>
                                         })}
                                     </tbody>
@@ -134,7 +148,8 @@ export default function CartPage() {
                                             </tr>
                                             <tr>
                                                 <th colSpan={2}>
-                                                    <Link to="/checkout" className='btn btn-primary w-100'>Proceed to Checkout</Link>
+                                                    {data.find(x => x.stockQuantity === 0) ?
+                                                        <p className='text-danger'>One Or More Products in Your Cart Are Out Of Stock, Please Remove Them to Proceed to Checkout</p> : <Link to="/checkout" className='btn btn-primary w-100'>Proceed to Checkout</Link>}
                                                 </th>
                                             </tr>
                                         </tbody>

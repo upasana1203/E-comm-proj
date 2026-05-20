@@ -68,7 +68,7 @@ export default function AdminNewsletterPage() {
                                             <td>{item.id}</td>
                                             <td>{item.email}</td>
                                             <td style={{ cursor: "pointer" }} onClick={() => updateStatus(item.id)}>{item.status ? "Active" : "Inactive"}</td>
-                                            <td><button className='btn btn-danger' onClick={() => deleteRecord(item.id)}><i className='bi bi-trash'></i></button></td>
+                                            <td>{localStorage.getItem("role") === "Super Admin" ? <button className='btn btn-danger' onClick={() => deleteRecord(item.id)}><i className='bi bi-trash'></i></button> : null}</td>
                                         </tr>
                                     })}
                                 </tbody>

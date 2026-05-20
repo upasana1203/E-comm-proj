@@ -65,7 +65,7 @@ export default function AdminMaincategoryPage() {
                                             </td>
                                             <td>{item.status ? "Active" : "Inactive"}</td>
                                             <td><Link to={`/admin/maincategory/update/${item.id}`} className='btn btn-primary'><i className='bi bi-pencil'></i></Link></td>
-                                            <td><button className='btn btn-danger' onClick={() => deleteRecord(item.id)}><i className='bi bi-trash'></i></button></td>
+                                            <td>{localStorage.getItem("role") === "Super Admin" ? <button className='btn btn-danger' onClick={() => deleteRecord(item.id)}><i className='bi bi-trash'></i></button> : null}</td>
                                         </tr>
                                     })}
                                 </tbody>

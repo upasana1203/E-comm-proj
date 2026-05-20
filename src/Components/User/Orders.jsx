@@ -66,23 +66,25 @@ export default function Orders() {
                   </tr>
                 </thead>
                 <tbody>
-                  {item.products?.map(item => {
-                    return <tr key={item.id}>
+                  {item.products?.map(x => {
+                    return <tr key={x.id}>
                       <td>
-                        <Link to={`${import.meta.env.VITE_APP_IMAGE_SERVER}${item.pic}`} target='_blank'>
-                          <img src={`${import.meta.env.VITE_APP_IMAGE_SERVER}${item.pic}`} height={70} width={90} alt="" />
+                        <Link to={`${import.meta.env.VITE_APP_IMAGE_SERVER}${x.pic}`} target='_blank'>
+                          <img src={`${import.meta.env.VITE_APP_IMAGE_SERVER}${x.pic}`} height={70} width={90} alt="" />
                         </Link>
                       </td>
-                      <td>{item.name}</td>
-                      <td>{item.brand}</td>
-                      <td>{item?.color}</td>
-                      <td>{item?.size}</td>
-                      <td>&#8377;{item.finalPrice}</td>
-                      <td>{item.qty}</td>
-                      <td>&#8377;{item.total}</td>
+                      <td>{x.name}</td>
+                      <td>{x.brand}</td>
+                      <td>{x?.color}</td>
+                      <td>{x?.size}</td>
+                      <td>&#8377;{x.finalPrice}</td>
+                      <td>{x.qty}</td>
+                      <td>&#8377;{x.total}</td>
                       <td>
                         <div className="btn-group">
-                        <Link to={`/product/${item.product}`} className='btn btn-primary btn-sm'>Buy Again</Link>
+                          <Link to={`/product/${x.product}`} className='btn btn-primary btn-sm'>Buy Again</Link>
+                          {item.orderStatus === "Delivered" ?
+                            <button className='btn btn-success btn-sm'>Write Review</button> : null}
                         </div>
                       </td>
                     </tr>

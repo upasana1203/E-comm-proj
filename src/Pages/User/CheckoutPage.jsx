@@ -67,21 +67,18 @@ export default function CheckoutPage() {
   useEffect(() => {
     (() => {
       dispatch(getCart())
-      if (CartStateData.length) {
-        let cart = CartStateData.filter(x => {
-          if (x.user === localStorage.getItem("userid")) {
-            let p = ProductStateData.find(item => item.id === x.product)
-            if(p){
-              return { ...x, stockQuantity: p.stockQuantity }
-            }
-          }
+      if (CartStateData.length && ProductStateData.length) {
+        let cart = CartStateData.filter(x => x.user === localStorage.getItem("userid"))
+        cart = cart.map(x => {
+          let product = ProductStateData.find(p => p.id === x.product)
+          x.stockQuantity = product.stockQuantity
+          return x
         })
-        console.log(cart)
         setData(cart)
         calculate(cart)
       }
     })()
-  }, [CartStateData.length])
+  }, [CartStateData.length, ProductStateData.length])
 
   useEffect(() => {
     (() => {
@@ -149,8 +146,8 @@ export default function CheckoutPage() {
                 <tbody>
                   {data.map((item, index) => {
                     return <tr key={index}>
-                      <td>{item.name}
-                        {item.stockQuantity===0?`(Out Of Stock)`:null}
+                      <td className={item.stockQuantity ? 'text-dark' : 'text-danger'}>{item.name}<br />
+                        {item.stockQuantity === 0 ? `(Out Of Stock)` : null}
                       </td>
                       <td>{item.brand}</td>
                       <td>{item.color}</td>
@@ -179,8 +176,9 @@ export default function CheckoutPage() {
                   <tr>
                     <td colSpan={2}>
                       {user.address?.length > 0 ?
-                        <button className='btn btn-primary w-100' onClick={placeOrder}>Place Order</button> :
-                        <Link to="/profile?option=Address" className='btn btn-primary w-100'>Create a Delivery Address First</Link>
+                        data.find(x => x.stockQuantity === 0) ?
+                          <p className='text-danger'>One Or More Products in Your Cart Are Out Of Stock, Please Remove Them to Proceed to Checkout</p> : <button className='btn btn-primary w-100' onClick={placeOrder}>Place Order</button>
+                        :<Link to="/profile?option=Address" className='btn btn-primary w-100'>Create a Delivery Address First</Link>
                       }
                     </td>
                   </tr>

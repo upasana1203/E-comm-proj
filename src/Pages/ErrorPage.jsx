@@ -1,8 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Breadcrum from '../Components/Breadcrum'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function ErrorPage() {
+    let navigate = useNavigate()
+
+    useEffect(() => {
+        setTimeout(() => {
+            if (localStorage.getItem("login")) {
+                if (window.location.pathname === "/profile")
+                    navigate(0)
+                else if (window.location.pathname === "/admin" && localStorage.getItem("role") !== "Buyer")
+                    navigate(0)
+            }
+        }, 500)
+    }, [])
     return (
         <>
             <Breadcrum title="404 - Page Not Found" description={"Oops! The page you’re looking for at Heritage Ally can’t be found. It may have been moved or removed—please return to the homepage and continue exploring our products."} />
