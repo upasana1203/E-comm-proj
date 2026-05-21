@@ -11,6 +11,8 @@ import ProductSlider from '../Components/ProductSlider'
 import { getProduct } from "../Redux/ActionCreators/ProductActionCreators"
 import { getCart, createCart } from "../Redux/ActionCreators/CartActionCreators"
 import { getWishlist, createWishlist } from "../Redux/ActionCreators/WishlistActionCreators"
+import { getTestimonial } from "../Redux/ActionCreators/TestimonialActionCreators"
+import Testimonial from '../Components/Testimonial';
 export default function Product() {
     let { id } = useParams()
     let [data, setData] = useState({})
@@ -22,9 +24,18 @@ export default function Product() {
         size: ""
     })
 
+    let [reviewStats, setReviewStats] = useState({
+        reviews: [],
+        total: 0,
+        avg: 0,
+        stats: [0, 0, 0, 0, 0]
+    })
+
     let ProductStateData = useSelector(state => state.ProductStateData)
     let CartStateData = useSelector(state => state.CartStateData)
     let WishlistStateData = useSelector(state => state.WishlistStateData)
+    let TestimonialStateData = useSelector(state => state.TestimonialStateData)
+
     let dispatch = useDispatch()
 
     let navigate = useNavigate()
@@ -105,7 +116,7 @@ export default function Product() {
                     window.history.back()
             }
         })()
-    }, [ProductStateData.length,id])
+    }, [ProductStateData.length, id])
 
     useEffect(() => {
         (() => dispatch(getCart()))()
@@ -114,6 +125,29 @@ export default function Product() {
     useEffect(() => {
         (() => dispatch(getWishlist()))()
     }, [WishlistStateData.length])
+
+    useEffect(() => {
+        (() => {
+            dispatch(getTestimonial())
+            if (TestimonialStateData.length) {
+                let reviews = TestimonialStateData.filter(x => x.product === id)
+                console.log(reviews)
+                let total = 0
+                let count = [0, 0, 0, 0, 0]
+                reviews.forEach(x => {
+                    total = total + parseInt(x.star)
+                    count[x.star - 1]++
+                })
+                let avg = (total / reviews.length).toFixed(1)
+                setReviewStats({
+                    reviews: reviews,
+                    total: reviews.length,
+                    avg: avg,
+                    stats: count
+                })
+            }
+        })()
+    }, [TestimonialStateData.length])
     return (
         <>
             <Breadcrum title={data.name} description={`${data.maincategory} -> ${data.subcategory} -> ${data.brand}`} />
@@ -200,6 +234,60 @@ export default function Product() {
                         </table>
                     </div>
                 </div>
+                <h5>Reviews</h5>
+                <div className="row">
+                    <div className="col-xl-3 col-sm-6">
+                        <div className="card p-5">
+                            <h1>{reviewStats.avg}/{5}</h1>
+                            <p>Total Reviews : {reviewStats.total}</p>
+                        </div>
+                    </div>
+                    <div className="col-xl-9 col-sm-6">
+                        <div className="card p-5">
+                            <div className="row">
+                                <div className="col-3">5 Star ({reviewStats.stats[4]})</div>
+                                <div className="col-9">
+                                    <div className="progress" role="progressbar" aria-label="Example with label">
+                                        <div className="progress-bar" style={{ width: (reviewStats.stats[4] / reviewStats.total * 100).toFixed(0) + "%" }}>{(reviewStats.stats[4] / reviewStats.total * 100).toFixed(0)}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-3">4 Star ({reviewStats.stats[3]})</div>
+                                <div className="col-9">
+                                    <div className="progress" role="progressbar" aria-label="Example with label">
+                                        <div className="progress-bar" style={{ width: (reviewStats.stats[3] / reviewStats.total * 100).toFixed(0) + "%" }}>{(reviewStats.stats[3] / reviewStats.total * 100).toFixed(0)}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-3">3 Star ({reviewStats.stats[2]})</div>
+                                <div className="col-9">
+                                    <div className="progress" role="progressbar" aria-label="Example with label">
+                                        <div className="progress-bar" style={{ width: (reviewStats.stats[2] / reviewStats.total * 100).toFixed(0) + "%" }}>{(reviewStats.stats[2] / reviewStats.total * 100).toFixed(0)}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-3">2 Star ({reviewStats.stats[1]})</div>
+                                <div className="col-9">
+                                    <div className="progress" role="progressbar" aria-label="Example with label">
+                                        <div className="progress-bar" style={{ width: (reviewStats.stats[1] / reviewStats.total * 100).toFixed(0) + "%" }}>{(reviewStats.stats[1] / reviewStats.total * 100).toFixed(0)}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-3">1 Star ({reviewStats.stats[0]})</div>
+                                <div className="col-9">
+                                    <div className="progress" role="progressbar" aria-label="Example with label">
+                                        <div className="progress-bar" style={{ width: (reviewStats.stats[0] / reviewStats.total * 100).toFixed(0) + "%" }}>{(reviewStats.stats[0] / reviewStats.total * 100).toFixed(0)}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {reviewStats.reviews.length?<Testimonial data={reviewStats.reviews} />:null}
             </div>
             <ProductSlider maincategory="Related Products" data={relatedData} />
         </>

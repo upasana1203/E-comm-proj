@@ -72,6 +72,14 @@ body {
   text-align: justify !important;
 }
 
+.testimonial-message{
+  height: 300px;
+  overflow: auto;
+}
+.testimonial-message::-webkit-scrollbar{
+  display: none;
+}
+
 a {
   color: var(--accent-color);
   text-decoration: none;
